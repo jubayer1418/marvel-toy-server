@@ -49,6 +49,22 @@ async function run() {
       const result = await allToysCollection.insertOne(toys);
       res.send(result);
     });
+    app.patch("/allToys/:id", async (req, res) => {
+      const id = req.params.id;
+      const body = req.body;
+      console.log(body);
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          Price: body.Price,
+          Quantity: body.Quantity,
+          description: body.description,
+        },
+      };
+      const result = await allToysCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    });
+
     app.delete("/allToys/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
