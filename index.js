@@ -25,6 +25,21 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
     const allToysCollection = client.db("marvelToy").collection("toys");
+    const catagoriesCollection = client.db("catagory").collection("catagorys");
+    // catagory\
+    app.get("/catagories", async (req, res) => {
+      const result = await catagoriesCollection.find().toArray();
+
+      res.send(result);
+    });
+    app.get("/catagories/:id", async (req, res) => {
+      console.log(req.params.id);
+      const query = {
+        _id: new ObjectId(req.params.id),
+      };
+      const result = await catagoriesCollection.findOne(query);
+      res.send(result);
+    });
     app.get("/allToys", async (req, res) => {
       console.log(req.query.sellerEmail);
       let query = {};
