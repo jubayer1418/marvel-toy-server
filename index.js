@@ -23,7 +23,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    client.connect();
     const allToysCollection = client.db("marvelToy").collection("toys");
     const catagoriesCollection = client.db("catagory").collection("catagorys");
     // catagory\
@@ -41,10 +41,11 @@ async function run() {
       res.send(result);
     });
     app.get("/allToys", async (req, res) => {
-      console.log(req.query.sellerEmail);
+      // console.log(req.query.sellerEmail);
       let query = {};
-      if (req.query?.sellerEmail) {
-        query = { sellerEmail: req.query.sellerEmail };
+      console.log(query);
+      if (req.query?.email) {
+        query = { email: req.query.email };
       }
       const result = await allToysCollection.find(query).toArray();
 
@@ -64,19 +65,14 @@ async function run() {
       const result = await allToysCollection.insertOne(toys);
       res.send(result);
     });
-    app.patch("/allToys/:id", async (req, res) => {
+    app.put("/allToys/:id", async (req, res) => {
       const id = req.params.id;
       const body = req.body;
       console.log(body);
+      console.log(body);
       const filter = { _id: new ObjectId(id) };
-      const updateDoc = {
-        $set: {
-          Price: body.Price,
-          Quantity: body.Quantity,
-          description: body.description,
-        },
-      };
-      const result = await allToysCollection.updateOne(filter, updateDoc);
+
+      const result = await allToysCollection.updateOne(filter);
       res.send(result);
     });
 
