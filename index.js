@@ -42,15 +42,32 @@ async function run() {
     });
     app.get("/allToys", async (req, res) => {
       // console.log(req.query.sellerEmail);
+      const type = req.query.type === "ascending";
+      const value = req.query.value;
+      const sortObj = {};
+      sortObj[value] = type ? 1 : -1;
       let query = {};
       console.log(query);
       if (req.query?.email) {
         query = { email: req.query.email };
       }
-      const result = await allToysCollection.find(query).toArray();
+      const curser = allToysCollection.find(query).sort(sortObj).limit(20);
+      const result = await curser.toArray();
 
       res.send(result);
     });
+    app.get("/toysearch/:text", async (req, res) => {
+      // console.log(req.query.sellerEmail);
+      const text = req.params.text;
+      const result = await allToysCollection
+        .find({
+          $or: [{ name: { $regex: text, $options: "i" } }],
+        })
+        .toArray();
+
+      res.send(result);
+    });
+
     app.get("/allToys/:id", async (req, res) => {
       console.log(req.params.id);
       const query = {
